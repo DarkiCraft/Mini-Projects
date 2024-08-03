@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "raylib.h"
+#include "raylib/raylib.h"
 
 /**
  * @brief Represents the Game of Life simulation.
@@ -121,21 +121,32 @@ class GameOfLife {
   }
 
   /**
+   * @brief Updates the state of a single cell based on the number of alive
+   * neighbors.
+   *
+   * @param cell The cell to update.
+   * @param count The number of alive neighbors.
+   */
+  void UpdateCell(Square& cell, int count) {
+    if (cell.is_alive_) {
+      if (count < 2 || count > 3) {
+        cell.is_alive_ = false;
+      }
+    } else {
+      if (count == 3) {
+        cell.is_alive_ = true;
+      }
+    }
+  }
+
+  /**
    * @brief Simulates one step of the Game of Life.
    */
   void Simulate() {
     for (std::size_t i = 0; i < squares_.size(); i++) {
       for (std::size_t j = 0; j < squares_.size(); j++) {
         int count = CountNeighbours(i, j);
-        if (squares_[i][j].is_alive_) {
-          if (count < 2 || count > 3) {
-            squares_[i][j].is_alive_ = false;
-          }
-        } else {
-          if (count == 3) {
-            squares_[i][j].is_alive_ = true;
-          }
-        }
+        UpdateCell(squares_[i][j], count);
       }
     }
   }
